@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motor Dealer</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-white flex flex-col min-h-screen">
+    <header class="bg-gray-200 py-10">
+      <div class="container mx-auto flex justify-center items-center">
+        <img
+          src="img/logo-lp3i (1).png"
+          alt="Politeknik LP3I"
+          class="h-16 mr-4"
+        />
+      </div>
+    </header>
+
+    <main class="container mx-auto mt-8 flex-grow">
+      <h2 class="text-2xl font-bold mb-2 text-center">Dealer Motor Resmi</h2>
+      <p class="text-center mb-8">
+        Berikut ini adalah beberapa motor yang tersedia:
+      </p>
+      <div
+        id="result"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        <!-- Dynamic content will be injected here -->
+      </div>
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+      <script>
+        const formatRupiah = (number) => {
+          return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          }).format(number);
+        };
+        const GetProduct = async () => {
+          await axios
+            .get("http://localhost:3000/product")
+            .then((response) => {
+              const products = response.data;
+              let bucket = "";
+              products.forEach((product) => {
+                bucket += `
+                <div class="p-6 rounded-3xl shadow-md border border-gray-100">
+                  <div>
+                    <img src="${product.foto}" alt="${
+                  product.nama
+                }" class="w-full h-48 object-cover mb-4"/>
+                  </div>
+                  <h3 class="text-lg font-bold mb-2">${product.nama}</h3>
+                  <p class="text-gray-600 font-normal mb-4">${
+                    product.deskripsi
+                  }</p>
+                  <span class="inline-block bg-${
+                    product.kategori === "AT" ? "blue" : "yellow"
+                  }-100 text-${
+                  product.kategori === "AT" ? "blue" : "yellow"
+                }-800 text-sm px-2 py-1 rounded-full font-semibold mb-2">${
+                  product.category
+                }</span>
+                  <div class="text-lg font-semibold text-gray-800">${formatRupiah(
+                    product.harga
+                  )}</div>
+                </div>`;
+              });
+              document.getElementById("result").innerHTML = bucket;
+            })
+            .catch((error) => {
+              alert(error.message);
+            });
+        };
+
+        GetProduct();
+      </script>
+    </main>
+
+    <footer class="bg-gray-900 py-4 mt-10 shadow w-full">
+      <div class="container mx-auto text-center">
+        <p class="text-white">
+          © 2023 Materi kuliah Front End Development by kanglerian | Politeknik
+          LP3I Kampus Tasikmalaya
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
